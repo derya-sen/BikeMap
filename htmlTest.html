@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map with Layers</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
+  <link href='index.css' rel='stylesheet' />
+</head>
+<body>
+  <div id='map'>
+    <div id="layerList"></div> 
+    <div id="chart-container"></div>
+
+    <div class="background-half-round" id="speedometer">
+      <div class="speed-number-wapper">
+        <div class="speed-number speed-0">
+          <span>0</span>
+        </div>
+        <div class="speed-number speed-10">
+          <span>10</span>
+        </div>
+        <div class="speed-number speed-20">
+          <span>20</span>
+        </div>
+        <div class="speed-number speed-30">
+          <span>30</span>
+        </div>
+        <div class="speed-number speed-40">
+          <span>40</span>
+        </div>
+        <div class="speed-number speed-50">
+          <span>50</span>
+        </div>
+        <div class="speed-number speed-60">
+          <span>60</span>
+        </div>
+      </div>
+      <div class="pointer speed-ani"></div>
+    </div>
+  </div>
+  
+  
+
+  <div id='sidebar'>
+    
+    <div class='sidebar-item'>
+      <input type='file' id='csvFile'accept=".csv" multiple>
+    </div>
+
+    <hr class='sidebar-divider'>
+
+    <div class='sidebar-item'>
+      <input type="file" accept="video/*" id="videoInput" onchange="handleFileChange()">
+    </div>
+
+    <hr class='sidebar-divider'>
+
+    <div class='sidebar-item' id='videoContainer' style='display: none;'>
+      <video id='mapVideo' width='320' height='240' controls>
+          <source src='' id="videoSource">
+      </video>
+
+      <label for="speedControl">Playback Speed:</label>
+        <input type="range" id="speedControl" min="0.5" max="5.0" step="0.1" value="1.0" onchange="changePlaybackSpeed()">
+        <span id="speedDisplay">1.0x</span>
+  </div>
+
+    <hr class='sidebar-divider'>
+
+    <div class='sidebar-item'>
+        <button id="downloadButton" onclick="downloadMap()">Download Map</button>
+      <canvas id="combinedCanvas" style="display: none;"></canvas>
+    </div>
+    
+    
+  </div>
+
+  
+  <script src='indexNeu.js'></script>
+</body>
+</html>

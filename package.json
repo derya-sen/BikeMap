@@ -1,0 +1,16 @@
+{
+  "name": "bachelorarbeit-v3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node": "^21.2.0",
+    "require": "^2.4.20"
+  }
+}
