@@ -9,15 +9,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+  <script src="https://unpkg.com/mapbox-gl-export"></script>
+
   <link href='index.css' rel='stylesheet' />
 </head>
 <body>
   <div id='container'>
     <div id='map'>
-      <div id="layerList">
-      </div> 
-      
-      <div id="chart-container"></div>
+      <div id="layerList"></div> 
+      <div id="popup"></div>
+
       <div class="tachometer" id="tachometer">
         <div class="needle" id="needle"></div>
         <div class="speed-number-wapper">
@@ -46,6 +48,7 @@
         <div class="speed-text" id="speedText"></div>
       </div>
     </div>
+    <canvas id="combinedCanvas" style="display: none;"></canvas>
 
     
 

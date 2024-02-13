@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    height: 100vh;
+    font-family: 'Calibri';
   }
 
 
@@ -20,11 +20,12 @@ body {
     display: none; 
     position: absolute;
     bottom: 20px;
-    right: 25px;
-    background: white;
+    left: 1px;
+    background: rgba(255, 255, 255, 0.792);
     padding: 20px;
     z-index: 1;
-    max-height: calc(100vh - 20px);
+    height: 500px;
+    width: 180px;
     overflow-y: auto;
     grid-auto-rows: min-content;
     row-gap: 5px;
@@ -34,11 +35,42 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 5px;
+    font-size: 16px;
+    
     }
+
+  
 
 .layer-checkbox {
     margin-bottom: 5px; 
   }
+
+  .legend-icon {
+    width: 20px; /* Set the desired width */
+    height: 20px; /* Set the desired height */
+}
+
+.legend-item{
+  padding-left: 20px;
+}
+
+.color-gradient {
+  height: 20px;
+  width: 100%;
+  background: linear-gradient(to right, 
+      rgba(33,102,172,0) 0%,
+      rgb(103,169,207) 10%,
+      rgb(209,229,240) 30%,
+      rgb(255,225,255) 50%,
+      rgb(238,174,238) 80%,
+      rgb(224,102,255) 100%
+  );
+}
+
+.value-labels {
+  display: flex;
+  justify-content: space-between;
+}
   
 
 #sidebar { 
@@ -89,6 +121,48 @@ form {
     border-radius: 50%;
     background-size: cover;
   }
+  
+  #chart {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    z-index: 1;
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.mapboxgl-popup-content {
+  width: 300px; /* Adjust the width as needed */
+}
+
+
+#popup {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+}
+
+#popup svg {
+  width: 100%;
+  height: auto;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.axis text {
+  font-size: 12px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
 
   .marker-container {
     position: absolute;
@@ -261,4 +335,9 @@ form {
   padding: 0px 5px 0px 0px;
   color: #ff4141;
   font-weight: bold;
+}
+
+
+.mapboxgl-map {
+  cursor: pointer;
 }
