@@ -7,19 +7,17 @@ const map = new mapboxgl.Map({
     zoom: 2
 });
 
-// Add navigation control
+// Add navigation control to map
 map.addControl(new mapboxgl.NavigationControl());
 
+///////////////////////Variables///////////////////////////////////////////////////////////////////////////////////////////
 
-
-document.getElementById('csvFile').addEventListener('change', handleCSVUpload);
 var canvas = document.getElementById('combinedCanvas');
 var mapContainer = document.getElementById('map');
 var layerList = document.getElementById('layerList');
 var legend = document.getElementById('legend');
 var tachometer = document.getElementById('tachometer');
 //var needle = document.getElementById('needle');
-
 
 var videoInput = document.getElementById('videoInput');
 var videoContainer = document.getElementById('videoContainer');
@@ -35,13 +33,17 @@ var csvFile;
 var videoFile;
 var pointGeoJSON;
 var lineGeoJSON;
+var averageSpeed;
+var time;
+var distance;
 
 
+////////////////////////////////Upload///////////////////////////////////////////////////////////////////////////////////
 
+document.getElementById('csvFile').addEventListener('change', csvUpload);
 //Upload function for csv-File
-function handleCSVUpload(event) {
+function csvUpload(event) {
 
-    //removeAllLayersAndSources();
 
     csvFile = event.target.files[0];
     const reader = new FileReader();
@@ -66,35 +68,11 @@ function handleCSVUpload(event) {
         reader.readAsText(csvFile);
     }
 }
-/*
-function removeAllLayersAndSources() {
-    // Remove all layers
-    map.getStyle().layers.forEach(layer => {
-        if (layer.id !== 'background' && layer.id !== 'sky') { // Skip default layers
-            map.removeLayer(layer.id);
-        }
-    });
 
-    // Manually keep track of sources or use a separate array to store source IDs
-    const sourceIds = ['temperature', 'pmLayer', 'acceleration', 'distance', 'humidity'];
-
-    // Remove all sources
-    sourceIds.forEach(sourceId => {
-        map.removeSource(sourceId);
-    });
-
-    // Remove all images
-    map.listImages().forEach(imageName => {
-        map.removeImage(imageName);
-    });
-}
-
-*/
 
 //Upload function for Video-file
-function handleFileChange() {
+function videoUpload() {
 
-    // Check if a file is selected and show it on the container
     if (videoInput.files.length > 0) {
         videoFile = videoInput.files[0];
         videoContainer.style.display = 'block';
@@ -107,13 +85,8 @@ function handleFileChange() {
 
 }
 
-//Function to change playback speed of the video
-function changePlaybackSpeed() {
-    const selectedSpeed = speedControl.value;
-    videoElement.playbackRate = parseFloat(selectedSpeed);
-    speedDisplay.textContent = selectedSpeed + 'x';
-}
 
+////////////////////////////ConvertToGeoJson//////////////////////////////////////////////////////////////////////////
 
 //Function to create Geojson with point-features
 function csvToPointGeoJSON(csv) {
@@ -230,7 +203,7 @@ function csvToLineGeoJSON(csv) {
     };
 }
 
-
+///////////////////////////////////////Zoom////////////////////////////////////////////////////////////////////
 // Function to zoom to added Layer
 function zoomLayer(layer) {
     const bounds = turf.bbox(layer);
@@ -240,7 +213,8 @@ function zoomLayer(layer) {
     });
 }
 
-//Function to add the layert to checkbox to hide and show them on the map
+//////////////////////////////////////CheckboxAndLegend////////////////////////////////////////////////////////////
+//Function to add the layer to checkbox to hide and show them on the map
 function addLayerCheckbox(layerId, legendId) {
     const layerList = document.getElementById('layerList');
 
@@ -274,6 +248,7 @@ function addLayerCheckbox(layerId, legendId) {
 }
 
 
+////////////////////////////////TemperatureData///////////////////////////////////////////////////////////////////
 //Function to create a layer with temperature data
 function createTemperatureLayer(pointLayer) {
     const temperatureValues = pointLayer.features.map(feature => feature.properties.temperature);
@@ -376,6 +351,7 @@ function createTemperatureLegend(temperatureRanges) {
 }
 
 
+////////////////////////////////////DistanceLayer/////////////////////////////////////////////////////////////////
 
 //Function to add a layer with data about distance values
 //It filters values < 1.5 meters.
@@ -433,16 +409,16 @@ function createDistanceLegend(legendIcon) {
     const legendLabel = document.createElement('div');
     legendLabel.className = 'legend-label';
     legendLabel.innerHTML = 'Abstand < 1.5 Meters';
-    legendLabel.style.flex = '1'; // This makes the label take up the available space
+    legendLabel.style.flex = '1'; 
 
     legendItem.appendChild(legendIconElement);
     legendItem.appendChild(legendLabel);
     layerList.appendChild(legendItem);
 }
 
+//////////////////////////////////////AccelerationLayer////////////////////////////////////////////////////////////////////
 
-//Acceleration layer
-//Function to add a layer with data about distance values
+//Function creates a layer for acceleration values
 //It filters values < 1.5 meters.
 function createAccelerationLayer(pointLayer) {
     map.addSource('acceleration', {
@@ -472,7 +448,7 @@ function createAccelerationLayer(pointLayer) {
     zoomLayer(pointLayer);
 }
 
-//Function creates a popup to show distance value (in m) on click on a specific point
+//Function creates a popup to show value value  on click on a specific point
 map.on('click', 'Erschütterung', (e) => {
     const acceleration = e.features[0].properties.acceleration_z;
 
@@ -483,7 +459,7 @@ map.on('click', 'Erschütterung', (e) => {
 });
 
 
-//Function creates a legend for the distance layer
+//Function creates a legend for the acceleration layer
 function createAccelerationLegend(legendIcon) {
     const legendItem = document.createElement('div');
     legendItem.id = `accelerationLegend`;
@@ -498,7 +474,7 @@ function createAccelerationLegend(legendIcon) {
     const legendLabel = document.createElement('div');
     legendLabel.className = 'legend-label';
     legendLabel.innerHTML = 'Erschütterung > 10 m/s^2';
-    legendLabel.style.flex = '1'; // This makes the label take up the available space
+    legendLabel.style.flex = '1'; 
 
     legendItem.appendChild(legendIconElement);
     legendItem.appendChild(legendLabel);
@@ -506,225 +482,7 @@ function createAccelerationLegend(legendIcon) {
 }
 
 
-
-
-
-//Function creates a layer that shows the route and adds it to the map
-//Also it adds a layer with a symbol that shows the start positin.
-function animatePointLayer(pointLayer, lineLayer) {
-    map.addSource('route', {
-        type: 'geojson',
-        data: lineLayer 
-    });
-
-    const firstPointFeature = pointLayer.features[0];
-    map.addSource('point', {
-        type: 'geojson',
-        data: firstPointFeature
-    });
-
-    map.addLayer({
-        id: 'Route',
-        source: 'route',
-        type: 'line',
-        paint: {
-            'line-width': 3,
-            'line-color': '#007cbf'
-        }
-    });
-
-    map.loadImage('fahrrad.png', (error, image) => {
-        if (error) throw error;
-
-        map.addImage('bike-icon', image);
-
-        map.addLayer({
-            id: 'Start',
-            source: 'point',
-            type: 'symbol',
-            layout: {
-                'icon-image': 'bike-icon',
-                'icon-size': 0.02,
-                'icon-rotation-alignment': 'map',
-                'icon-allow-overlap': true,
-                'icon-ignore-placement': true
-            }
-
-        })
-    });
-
-
-    zoomLayer(lineLayer);
-    //createBikeLegend('fahrrad.png')
-    //addLayerCheckbox('Start', `bikeLegend`);
-
-
-    let running = false;
-
-    //Function animates the route synchronized to the video when its played and stops when video stops
-    function animateRoute() {
-        if (!running) return;
-
-        const videoTime = videoElement.currentTime;
-        const totalDuration = videoElement.duration;
-        const routeCoordinates = lineLayer.features[0].geometry.coordinates;
-        const fraction = videoTime / totalDuration;
-        const endIndex = Math.floor(fraction * (routeCoordinates.length - 1));
-        const slicedCoordinates = routeCoordinates.slice(0, endIndex);
-
-        const slicedLineFeature = {
-            type: 'Feature',
-            geometry: {
-                type: 'LineString',
-                coordinates: slicedCoordinates
-            }
-        };
-
-        const index = fraction * (routeCoordinates.length - 1);
-        const startIndex = Math.floor(index);
-
-        map.getSource('route').setData(slicedLineFeature);
-
-        const speedValue = pointLayer.features[startIndex].properties.speed;
-        updateSpeedometer(speedValue);
-
-        requestAnimationFrame(animateRoute);
-    }
-
-    /*
-    //Function 
-    function toggleAnimation() {
-        tachometer.classList.toggle('playing', !videoElement.paused);
-    }
-*/
-
-    // Event listener when video is played
-    videoElement.addEventListener('play', () => {
-        running = true;
-        animateRoute();
-        //toggleAnimation();
-    });
-
-    // Event listener when video is paused
-    videoElement.addEventListener('pause', () => {
-        running = false;
-        //toggleAnimation();
-    });
-
-    //Event listener when video ends
-    videoElement.addEventListener('ended', () => {
-        running = false;
-        //toggleAnimation();
-        tachometer.classList.remove('playing');
-        needle.style.transform = 'translate(-50%, -50%) rotate(-90deg)';
-        const speedometerText = `⌀ ${Math.round(averageSpeed)} km/h<br>🛣️ ${distance.toFixed(2)} km<br> ⏱️ ${time.toFixed(2)} h`;
-        speedometerValue.innerHTML = speedometerText;
-    });
-}
-   
-
-/*
-//Function creates legend for the start position
-function createBikeLegend(legendIcon) {
-    const legendItem = document.createElement('div');
-    legendItem.id = `bikeLegend`;
-    legendItem.className = 'legend-item';
-    legendItem.style.display = 'flex';
-
-    const legendIconElement = document.createElement('div');
-    legendIconElement.className = legendIcon;
-    legendIconElement.innerHTML = `<img src="${legendIcon}" alt="icon" class="legend-icon"/>`;
-    legendIconElement.style.marginRight = '8px'; 
-/*
-    const legendLabel = document.createElement('div');
-    legendLabel.className = 'legend-label';
-    legendLabel.innerHTML = 'Start position';
-    legendLabel.style.flex = '1'; 
-
-    legendItem.appendChild(legendIconElement);
-   // legendItem.appendChild(legendLabel);
-    layerList.appendChild(legendItem);
-}
-*/
-
-
-
-//Function calculates total distance of the route
-function calculateTotalDistance(geojson) {
-    let totalDistance = 0;
-
-    for (i = 1; i < geojson.features.length; i++) {
-        const currentFeature = geojson.features[i];
-        const previousFeature = geojson.features[i - 1];
-
-        const distance = calculateDistance(
-            currentFeature.geometry.coordinates[1],
-            currentFeature.geometry.coordinates[0],
-            previousFeature.geometry.coordinates[1],
-            previousFeature.geometry.coordinates[0]
-        )
-
-        totalDistance += distance;
-    }
-
-    return totalDistance;
-}
-
-//Function to calculate distance (in km) between two points using Haversine formula
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; 
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; 
-    return distance;
-}
-
-// Function to convert degrees to radians
-function deg2rad(deg) {
-    return deg * (Math.PI / 180);
-}
-
-//Function calculates total time of the whole route
-function calculateTime(geojson) {
-    const length = geojson.features.length - 1;
-    let totalTime = 0;
-
-    const parseTimestamp = (timestamp) => new Date(timestamp).getTime();
-
-    const startTime = parseTimestamp(geojson.features[0].properties.timestamp);
-    const endTime = parseTimestamp(geojson.features[length].properties.timestamp);
-
-    totalTime = (endTime - startTime) / (1000 * 60 * 60);
-    return totalTime;
-}
-
-var averageSpeed;
-var time;
-var distance;
-//Function calculates average speed (in km/h) depending on total distance and time
-function calculateAverageSpeed(geojson) {
-    time = calculateTime(geojson);
-    distance = calculateTotalDistance(geojson);
-    averageSpeed = distance / time;
-
-
-    const speedometerText = `⌀ ${Math.round(averageSpeed)} km/h<br>🛣️ ${distance.toFixed(2)} km<br> ⏱️ ${time.toFixed(2)} h`;
-
-    // Update the speedometer value with the concatenated text
-    speedometerValue.innerHTML = speedometerText;
-}
-
-
-// Function to update the speedometer's value
-function updateSpeedometer(speedValue) {
-    speedometerValue.textContent = `${Math.round(speedValue)} km/h`;
-}
-
-
+////////////////////////////////HumidityLayer//////////////////////////////////////////////////////////////////
 
 //Function creates layer for humidity values
 function createHumidityLayer(pointLayer) {
@@ -829,7 +587,9 @@ map.on('click', 'Luftfeuchtigkeit', (e) => {
 });
 
 
+/////////////////////////////////////PMLayer/////////////////////////////////////////////////////////////////////////
 
+// predefined ranges for pmValues to give different colors
 var pmRanges = [
     { min: 0, max: 10, color: '#00ced1', label: 'Sehr gut' },
     { min: 11, max: 20, color: '#008b8b', label: 'Gut' },
@@ -933,21 +693,20 @@ function createPmLegend(pmRanges) {
 
 
 function getColorForPM(pmValue) {
-    // Define color ranges here
     if (pmValue <= 10) {
-        return '#48d1cc'; // very good
+        return '#48d1cc'; 
     } else if (pmValue <= 20) {
-        return '#00c5cd'; // good
+        return '#00c5cd'; 
     } else if (pmValue <= 25) {
-        return '#ffd700'; // moderate
+        return '#ffd700'; 
     } else if (pmValue <= 50) {
-        return '#ff3030'; // poor
+        return '#ff3030'; 
     } else {
-        return '#8b1a1a'; // very poor
+        return '#8b1a1a'; 
     }
 }
 
-//Function creates bar chart that shows value for each pm-data
+//Function creates bar chart that shows value for each pm-data 
 function generateBarChart(pm1, pm2_5, pm4, pm10) {
     const data = [
         { pmType: 'PM1', value: pm1 },
@@ -1009,97 +768,190 @@ map.on('click', 'Feinstaub', function (e) {
 
     new mapboxgl.Popup()
         .setLngLat(e.lngLat)
-        .setDOMContent(document.getElementById('popup').firstChild) // Set SVG element as content
+        .setDOMContent(document.getElementById('popup').firstChild) 
         .addTo(map);
 });
 
 
 
+//////////////////////////////////////////RouteLayerAndAnimation///////////////////////////////////////////////
 
+//Function creates a layer that shows the route and adds it to the map
+//Also it adds a layer with a symbol that shows the start position.
+function animatePointLayer(pointLayer, lineLayer) {
+    map.addSource('route', {
+        type: 'geojson',
+        data: lineLayer 
+    });
 
-function downloadMap() {
-    const canvas = document.getElementById('combinedCanvas');
-    const ctx = canvas.getContext('2d');
-    const mapContainer = document.getElementById('map');
-    const layerList = document.getElementById('layerList');
-    const tachometer = document.getElementById('tachometer');
+    const firstPointFeature = pointLayer.features[0];
+    map.addSource('point', {
+        type: 'geojson',
+        data: firstPointFeature
+    });
 
-    const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
-
-    if (!selectedCheckbox) {
-        alert('Please select a layer to download.');
-        return;
-    }
-
-    const layerId = selectedCheckbox.id;
-    const legendContainerId = layerId;
-    const legendContainer = document.getElementById(legendContainerId);
-
-    if (!legendContainer) {
-        console.error(`Legend container with ID '${legendContainerId}' not found.`);
-        return;
-    }
-
-    const width = mapContainer.offsetWidth;
-    const height = mapContainer.offsetHeight;
-
-    canvas.width = width * window.devicePixelRatio;
-    canvas.height = height * window.devicePixelRatio;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    map.panBy([1, 0]);
-
-    setTimeout(() => {
-        map.once('render', () => {
-            ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
-
-            html2canvas(layerList).then(legendCanvas => {
-                ctx.drawImage(legendCanvas, 10, height - layerList.offsetHeight - 10);
-
-                    // Create a download link
-                    const link = document.createElement('a');
-                    link.setAttribute('download', `map_with_${layerId}_legend_and_tachometer.png`);
-                    link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
-                    link.click();
-                });
-        });
-    }, 200);
-}
-
-
-
-
-
-/*
-function getSpeedValueAtTime(targetTime) {
-    // Find the nearest speed value based on timestamps
-    let nearestSpeed;
-    let timeDifference = Infinity;
-
-    for (const feature of pointGeoJSON.features) {
-        const featureTime = new Date(feature.properties.timestamp).getTime();;
-        const difference = Math.abs(targetTime * 1000 - featureTime);
-
-        if (difference < timeDifference) {
-            nearestSpeed = feature.properties.speed;
-            timeDifference = difference;
+    map.addLayer({
+        id: 'Route',
+        source: 'route',
+        type: 'line',
+        paint: {
+            'line-width': 3,
+            'line-color': '#007cbf'
         }
+    });
+
+    map.loadImage('fahrrad.png', (error, image) => {
+        if (error) throw error;
+
+        map.addImage('bike-icon', image);
+
+        map.addLayer({
+            id: 'Start',
+            source: 'point',
+            type: 'symbol',
+            layout: {
+                'icon-image': 'bike-icon',
+                'icon-size': 0.02,
+                'icon-rotation-alignment': 'map',
+                'icon-allow-overlap': true,
+                'icon-ignore-placement': true
+            }
+
+        })
+    });
+    zoomLayer(lineLayer);
+
+
+
+    let running = false;
+
+    //Function animates the route synchronized to the video when its played and stops when video stops
+    function animateRoute() {
+        if (!running) return;
+
+        const videoTime = videoElement.currentTime;
+        const totalDuration = videoElement.duration;
+        const routeCoordinates = lineLayer.features[0].geometry.coordinates;
+        const fraction = videoTime / totalDuration;
+        const endIndex = Math.floor(fraction * (routeCoordinates.length - 1));
+        const slicedCoordinates = routeCoordinates.slice(0, endIndex);
+
+        const slicedLineFeature = {
+            type: 'Feature',
+            geometry: {
+                type: 'LineString',
+                coordinates: slicedCoordinates
+            }
+        };
+
+        const index = fraction * (routeCoordinates.length - 1);
+        const startIndex = Math.floor(index);
+
+        map.getSource('route').setData(slicedLineFeature);
+
+        const speedValue = pointLayer.features[startIndex].properties.speed;
+        updateSpeedometer(speedValue);
+
+        requestAnimationFrame(animateRoute);
     }
 
-    console.log(nearestSpeed)
+    
 
-    return nearestSpeed;
+    // Event listener when video is played
+    videoElement.addEventListener('play', () => {
+        running = true;
+        animateRoute();
+    });
+
+    // Event listener when video is paused
+    videoElement.addEventListener('pause', () => {
+        running = false;
+    });
+
+    //Event listener when video ends
+    videoElement.addEventListener('ended', () => {
+        running = false;
+        tachometer.classList.remove('playing');
+        needle.style.transform = 'translate(-50%, -50%) rotate(-90deg)';
+        const speedometerText = `⌀ ${Math.round(averageSpeed)} km/h<br>🛣️ ${distance.toFixed(2)} km<br> ⏱️ ${time.toFixed(2)} h`;
+        speedometerValue.innerHTML = speedometerText;
+    });
 }
-*/
+   
+
+
+//////////////////////////////////////////////Distance&Speed&Time//////////////////////////////////////////////////////////
+
+//Function calculates total distance of the route
+function calculateTotalDistance(geojson) {
+    let totalDistance = 0;
+
+    for (i = 1; i < geojson.features.length; i++) {
+        const currentFeature = geojson.features[i];
+        const previousFeature = geojson.features[i - 1];
+
+        const distance = calculateDistance(
+            currentFeature.geometry.coordinates[1],
+            currentFeature.geometry.coordinates[0],
+            previousFeature.geometry.coordinates[1],
+            previousFeature.geometry.coordinates[0]
+        )
+
+        totalDistance += distance;
+    }
+
+    return totalDistance;
+}
+
+//Function to calculate distance (in km) between two points using Haversine formula
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; 
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; 
+    return distance;
+}
+
+// Function to convert degrees to radians
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
+
+//Function calculates total time of the whole route
+function calculateTime(geojson) {
+    const length = geojson.features.length - 1;
+    let totalTime = 0;
+
+    const parseTimestamp = (timestamp) => new Date(timestamp).getTime();
+
+    const startTime = parseTimestamp(geojson.features[0].properties.timestamp);
+    const endTime = parseTimestamp(geojson.features[length].properties.timestamp);
+
+    totalTime = (endTime - startTime) / (1000 * 60 * 60);
+    return totalTime;
+}
 
 
 
 
+//Function calculates average speed (in km/h) depending on total distance and time
+function calculateAverageSpeed(geojson) {
+    time = calculateTime(geojson);
+    distance = calculateTotalDistance(geojson);
+    averageSpeed = distance / time;
+    const speedometerText = `⌀ ${Math.round(averageSpeed)} km/h<br>🛣️ ${distance.toFixed(2)} km<br> ⏱️ ${time.toFixed(2)} h`;
+    speedometerValue.innerHTML = speedometerText;
+}
 
 
+// Function to update the speedometer's value
+function updateSpeedometer(speedValue) {
+    speedometerValue.textContent = `${Math.round(speedValue)} km/h`;
+}
 
 
 
@@ -1143,6 +995,65 @@ function getSpeedValueAtTime(targetTime, geojson) {
   return closestEntry.speed;
 }
 
+//Function to change playback speed of the video
+function changePlaybackSpeed() {
+    const selectedSpeed = speedControl.value;
+    videoElement.playbackRate = parseFloat(selectedSpeed);
+    speedDisplay.textContent = selectedSpeed + 'x';
+}
 
 
 
+
+//////////////////////////////////////Download//////////////////////////////////////////////////////////////////////
+
+function downloadMap() {
+    const canvas = document.getElementById('combinedCanvas');
+    const ctx = canvas.getContext('2d');
+    const mapContainer = document.getElementById('map');
+    const layerList = document.getElementById('layerList');
+    const tachometer = document.getElementById('tachometer');
+
+    const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
+
+    if (!selectedCheckbox) {
+        alert('Please select a layer to download.');
+        return;
+    }
+
+    const layerId = selectedCheckbox.id;
+    const legendContainerId = layerId;
+    const legendContainer = document.getElementById(legendContainerId);
+
+    if (!legendContainer) {
+        console.error(`Legend container with ID '${legendContainerId}' not found.`);
+        return;
+    }
+
+    const width = mapContainer.offsetWidth;
+    const height = mapContainer.offsetHeight;
+
+    canvas.width = width * window.devicePixelRatio;
+    canvas.height = height * window.devicePixelRatio;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    map.panBy([1, 0]);
+
+    setTimeout(() => {
+        map.once('render', () => {
+            ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
+
+            html2canvas(layerList).then(legendCanvas => {
+                ctx.drawImage(legendCanvas, 10, height - layerList.offsetHeight - 10);
+
+                    const link = document.createElement('a');
+                    link.setAttribute('download', `map_with_${layerId}_legend_and_tachometer.png`);
+                    link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
+                    link.click();
+                });
+        });
+    }, 200);
+}
