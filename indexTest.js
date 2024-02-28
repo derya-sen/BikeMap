@@ -1452,3 +1452,58 @@ function createAccelerationLegend(minValue, maxValue) {
 
     document.getElementById('layerList').appendChild(legendItem);
 }
+
+/*
+    //Function 
+    function toggleAnimation() {
+        tachometer.classList.toggle('playing', !videoElement.paused);
+    }
+*/
+
+
+/*
+//Function creates legend for the start position
+function createBikeLegend(legendIcon) {
+    const legendItem = document.createElement('div');
+    legendItem.id = `bikeLegend`;
+    legendItem.className = 'legend-item';
+    legendItem.style.display = 'flex';
+
+    const legendIconElement = document.createElement('div');
+    legendIconElement.className = legendIcon;
+    legendIconElement.innerHTML = `<img src="${legendIcon}" alt="icon" class="legend-icon"/>`;
+    legendIconElement.style.marginRight = '8px'; 
+/*
+    const legendLabel = document.createElement('div');
+    legendLabel.className = 'legend-label';
+    legendLabel.innerHTML = 'Start position';
+    legendLabel.style.flex = '1'; 
+
+    legendItem.appendChild(legendIconElement);
+   // legendItem.appendChild(legendLabel);
+    layerList.appendChild(legendItem);
+}
+*/
+
+
+/*
+function getSpeedValueAtTime(targetTime) {
+    // Find the nearest speed value based on timestamps
+    let nearestSpeed;
+    let timeDifference = Infinity;
+
+    for (const feature of pointGeoJSON.features) {
+        const featureTime = new Date(feature.properties.timestamp).getTime();;
+        const difference = Math.abs(targetTime * 1000 - featureTime);
+
+        if (difference < timeDifference) {
+            nearestSpeed = feature.properties.speed;
+            timeDifference = difference;
+        }
+    }
+
+    console.log(nearestSpeed)
+
+    return nearestSpeed;
+}
+*/
