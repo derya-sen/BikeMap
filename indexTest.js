@@ -1062,3 +1062,393 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+
+/*
+var temperatureRanges = [];
+
+function createTemperatureLayerAndLegend(pointLayer) {
+    // Extract temperature values from the GeoJSON features
+    const temperatureValues = pointLayer.features.map(feature => feature.properties.temperature);
+
+    // Determine temperature ranges and steps dynamically
+    const minTemperature = Math.min(...temperatureValues);
+    const maxTemperature = Math.max(...temperatureValues);
+    const temperatureSteps = 5; // Adjust as needed
+
+
+    for (let i = 0; i < temperatureSteps; i++) {
+        const rangeStart = minTemperature + (i / temperatureSteps) * (maxTemperature - minTemperature);
+        const rangeEnd = minTemperature + ((i + 1) / temperatureSteps) * (maxTemperature - minTemperature);
+
+        // Adjust the end value to avoid overlap
+        temperatureRanges.push({ start: rangeStart, end: rangeEnd - 0.000000001 });
+    }
+
+    const colorStops = temperatureRanges.reduce((acc, currentValue, index, array) => {
+        if (index < array.length - 1) {
+            acc.push(currentValue.start);
+            acc.push(getColorForTemperature(currentValue.start)); // Implement getColorForTemperature function
+        }
+        return acc;
+    }, []);
+    console.log(colorStops)
+
+    // Add the last color for the upper bound
+    colorStops.push(temperatureRanges[temperatureRanges.length - 1].start);
+    colorStops.push(getColorForTemperature(temperatureRanges[temperatureRanges.length - 1].start));
+
+    map.addSource('temperature', {
+        type: 'geojson',
+        data: pointLayer
+    });
+
+    // Add a single layer with combined properties and filter for all temperature ranges
+    map.addLayer({
+        id: 'temperatureLayer',
+        type: 'circle',
+        source: 'temperature',
+        paint: {
+            'circle-radius': 7,
+            'circle-color': [
+                'interpolate',
+                ['linear'],
+                ['get', 'temperature'],
+                ...colorStops,
+            ],
+            'circle-opacity': 0.9
+        },
+        layout: {
+            visibility: 'visible'
+        }
+    });
+
+
+    createTemperatureLegend(temperatureRanges);
+    addLayerCheckbox('temperatureLayer', 'temperatureLegend')
+    zoomLayer(pointLayer);
+}
+
+map.on('click', 'temperatureLayer', (e) => {
+    const temperature = e.features[0].properties.temperature;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(`<p>Temperature: ${temperature.toFixed(2)}°C</p>`)
+        .addTo(map);
+});
+
+
+function getColorForTemperature(temperature) {
+    for (let i = 0; i < temperatureRanges.length; i++) {
+        const range = temperatureRanges[i];
+        if (temperature >= range.start && temperature <= range.end) {
+            // Return the color for the matched range
+            return getColorForRange(i);
+        }
+    }
+    // Default color if no range is matched
+    return 'gray';
+}
+
+function getColorForRange(rangeIndex) {
+    // Customize this function based on your color choices for each range
+    switch (rangeIndex) {
+        case 0:
+            return '#FFD700';
+        case 1:
+            return '#FFA500';
+        case 2:
+            return '#FF7256';
+        case 3:
+            return '#FF4500';
+        case 4:
+            return '#CD0000';
+        default:
+            return 'gray';
+    }
+}
+
+
+function generateColorStops(temperatureRanges) {
+    // Adjust as needed
+    const colorStops = [];
+
+
+    for (let i = 0; i < temperatureRanges.length - 1; i++) {
+        colorStops.push(temperatureRanges[i].start);
+        colorStops.push(colors[i]);
+        colorStops.push(temperatureRanges[i + 1].start);
+        colorStops.push(colors[i]);
+    }
+    console.log(colorStops);
+
+    // Add the last temperature value and color stop
+    colorStops.push(temperatureRanges[temperatureRanges.length - 1].start);
+    colorStops.push(colors[colors.length - 1]);
+
+    return colorStops;
+}
+
+function createTemperatureLegend(temperatureRanges) {
+    const legendItem = document.createElement('div');
+    legendItem.id = 'temperatureLegend';
+    legendItem.className = 'legend-item';
+
+    const legendLabel = document.createElement('div');
+    legendLabel.className = 'legend-label';
+    //legendLabel.textContent = 'Temperature Legend';
+
+    legendItem.appendChild(legendLabel);
+
+    for (let i = 0; i < temperatureRanges.length; i++) {
+        const legendSymbol = document.createElement('div');
+        legendSymbol.className = 'legend-symbol';
+        legendSymbol.style.backgroundColor = getColorForRange(i); // Use the same colors array as in generateColorStops
+        legendSymbol.textContent = `${temperatureRanges[i].start.toFixed(2)} - ${temperatureRanges[i].end.toFixed(2)}°C`;
+
+        legendItem.appendChild(legendSymbol);
+    }
+
+    layerList.appendChild(legendItem);
+}
+*/
+
+
+///animation old version with bike
+/*
+function animatePointLayer(pointLayer, lineLayer) {
+    map.addSource('route', {
+        type: 'geojson',
+        data: lineLayer // Replace with your GeoJSON file URL
+    });
+
+    const firstPointFeature = pointLayer.features[0];
+
+    map.addSource('point', {
+        type: 'geojson',
+        data: firstPointFeature
+    });
+
+    map.addLayer({
+        id: 'route',
+        source: 'route',
+        type: 'line',
+        paint: {
+            'line-width': 2,
+            'line-color': '#007cbf'
+        }
+    });
+
+    map.loadImage('fahrrad.png', (error, image) => {
+        if (error) throw error;
+
+        map.addImage('bike-icon', image);
+
+        map.addLayer({
+            id: 'point',
+            source: 'point',
+            type: 'symbol',
+            layout: {
+                'icon-image': 'bike-icon',
+                'icon-size': 0.02,
+                'icon-rotation-alignment': 'map',
+                'icon-allow-overlap': true,
+                'icon-ignore-placement': true
+            }
+
+        })
+    });
+
+
+    zoomLayer(lineLayer);
+    //addLayerCheckbox('route');
+
+    //firstPointFeature.geometry.coordinates = lineLayer.features[0].geometry.coordinates[0];
+
+    // Update the source with the initial data
+    //map.getSource('point').setData(firstPointFeature);
+
+    let running = false;
+    
+    /*
+    function animate() {
+        if (!running) return;
+    
+        const videoTime = videoElement.currentTime;
+        const totalDuration = videoElement.duration;
+        const routeCoordinates = lineLayer.features[0].geometry.coordinates;
+        
+        // Calculate the fraction of video duration passed
+        const fraction = videoTime / totalDuration;
+    
+        // Calculate the index of the coordinate pair closest to the current fraction
+        const index = fraction * (routeCoordinates.length - 1);
+    
+        // Calculate the fractional part to interpolate between the two closest coordinates
+        const fractionalIndex = index % 1;
+        const startIndex = Math.floor(index);
+        const endIndex = Math.min(startIndex + 1, routeCoordinates.length - 1);
+        
+        const start = routeCoordinates[startIndex];
+        const end = routeCoordinates[endIndex];
+    
+        // Interpolate between the current and next coordinates
+        const interpolatedLng = start[0] + (end[0] - start[0]) * fractionalIndex;
+        const interpolatedLat = start[1] + (end[1] - start[1]) * fractionalIndex;
+    
+        // Update point geometry to the interpolated position
+        firstPointFeature.geometry.coordinates = [interpolatedLng, interpolatedLat];
+    
+        // Update the source with this new data
+        map.getSource('point').setData(firstPointFeature);
+    
+        // Update the speed value based on the closest coordinate pair
+        const speedValue = pointLayer.features[startIndex].properties.speed;
+        updateSpeedometer(speedValue);
+    
+        // Request the next frame of animation
+        requestAnimationFrame(animate);
+    }
+    
+
+
+    // Event listener for video play
+    videoElement.addEventListener('play', () => {
+        running = true;
+        animate();
+        toggleAnimation();
+        //updateNeedleRotation(speedValue)
+    });
+
+    // Event listener for video pause
+    videoElement.addEventListener('pause', () => {
+        running = false;
+        toggleAnimation();
+        //updateNeedleRotation(speedValue)
+    });
+
+    videoElement.addEventListener('ended', () => {
+        tachometer.classList.remove('playing');
+        needle.style.transform = 'translate(-50%, -50%) rotate(-90deg)';
+        speedometerValue.textContent = `⌀ ${averageSpeed.toFixed(2)} km/h`;
+    });
+
+}
+*/
+
+//alte Funktion für Acceleration
+//Function creates layer with acceleration data and adds to the map
+function createAccelerationLayer(pointLayer) {
+    map.addSource('acceleration', {
+        type: 'geojson',
+        data: pointLayer // Replace with your GeoJSON file URL
+    });
+
+    const minAcceleration = Math.floor(d3.min(pointLayer.features, d => d.properties.acceleration_z));
+    const maxAcceleration = Math.ceil(d3.max(pointLayer.features, d => d.properties.acceleration_z));
+
+    map.addLayer({
+        id: 'Erschütterung',
+        source: 'acceleration',
+        type: 'heatmap',
+        paint: {
+            'heatmap-weight': [
+                'interpolate',
+                ['linear'],
+                ['get', 'acceleration_z'], 
+                minAcceleration, 0, 
+                maxAcceleration, 1  
+            ],
+            'heatmap-intensity': {
+                stops: [
+                    [0, 1],
+                    [9, 3],
+                ],
+            },
+            'heatmap-color': [
+                'interpolate',
+                ['linear'],
+                ['heatmap-density'],
+                0,
+                'rgba(33,102,172,0)',
+                0.2,
+                'rgb(103,169,207)',
+                0.4,
+                'rgb(209,229,240)',
+                0.6,
+                'rgb(255,225,255)',
+                0.8,
+                'rgb(238,174,238)',
+                1,
+                'rgb(224,102,255)'
+            ],
+            'heatmap-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                0,
+                1,
+                10,
+                20
+            ],
+            'heatmap-opacity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                7,
+                1,
+                9,
+                1
+            ]
+        },
+        layout: {
+            visibility: 'visible'
+        }
+    });
+
+    createAccelerationLegend(minAcceleration, maxAcceleration);
+    addLayerCheckbox('Erschütterung', 'accelerationLegend');
+    zoomLayer(pointLayer);
+}
+
+
+//Function creates a popup to show acceleration value on click on a specific point
+map.on('click', 'Erschütterung', (e) => {
+    const acceleration = e.features[0].properties.acceleration_z;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(`<p>Erschütterung: ${acceleration.toFixed(1)}m/s^2</p>`)
+        .addTo(map);
+});
+
+//Function creates a legend for the acceleration layer
+function createAccelerationLegend(minValue, maxValue) {
+    const legendItem = document.createElement('div');
+    legendItem.className = 'legend-item';
+    legendItem.id = 'accelerationLegend'
+
+    const legendLabel = document.createElement('div');
+    legendLabel.className = 'legend-label';
+
+    const colorGradient = document.createElement('div');
+    colorGradient.className = 'color-gradient';
+
+    const valueLabels = document.createElement('div');
+    valueLabels.className = 'value-labels';
+
+    const minValueLabel = document.createElement('span');
+    minValueLabel.textContent = minValue.toFixed(2) + 'm/s^2';
+
+    const maxValueLabel = document.createElement('span');
+    maxValueLabel.textContent = maxValue.toFixed(2) + 'm/s^2';
+
+    legendItem.appendChild(legendLabel);
+    legendItem.appendChild(colorGradient);
+    legendItem.appendChild(valueLabels);
+    valueLabels.appendChild(minValueLabel);
+    valueLabels.appendChild(maxValueLabel);
+
+    document.getElementById('layerList').appendChild(legendItem);
+}

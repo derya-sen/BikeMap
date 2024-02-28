@@ -313,4 +313,140 @@ function handleFileChange() {
     speedDisplay.textContent = selectedSpeed + 'x';
   }
   
+
+
+
+
+  /* video code
+
+  
+
+// Function to update the speedometer's value
+function updateSpeedometer(speedValue) {
+    speedometerValue.textContent = `${speedValue.toFixed(2)} km/h`;
+}
+
+
+function toggleAnimation() {
+    tachometer.classList.toggle('playing', !videoElement.paused);
+}
+
+var speedValue;
+
+function animatePointLayer(pointLayer, lineLayer) {
+    map.addSource('route', {
+        type: 'geojson',
+        data: lineLayer // Replace with your GeoJSON file URL
+    });
+
+    const firstPointFeature = pointLayer.features[0];
+
+    map.addSource('point', {
+        type: 'geojson',
+        data: firstPointFeature
+    });
+
+    map.addLayer({
+        id: 'route',
+        source: 'route',
+        type: 'line',
+        paint: {
+            'line-width': 2,
+            'line-color': '#007cbf'
+        }
+    });
+
+    map.loadImage('fahrrad.png', (error, image) => {
+        if (error) throw error;
+
+        map.addImage('bike-icon', image);
+
+        map.addLayer({
+            id: 'point',
+            source: 'point',
+            type: 'symbol',
+            layout: {
+                'icon-image': 'bike-icon',
+                'icon-size': 0.02,
+                'icon-rotate': ['get', 'bearing'],
+                'icon-rotation-alignment': 'map',
+                'icon-allow-overlap': true,
+                'icon-ignore-placement': true
+            }
+
+        })
+    });
+
+
+    zoomLayer(lineLayer);
+    //addLayerCheckbox('route');
+
+    firstPointFeature.geometry.coordinates = lineLayer.features[0].geometry.coordinates[0];
+
+    // Update the source with the initial data
+    map.getSource('point').setData(firstPointFeature);
+
+    let running = false;
+
+    function animate() {
+        if (!running) return;
+
+        const videoTime = videoElement.currentTime;
+        const steps = lineLayer.features[0].geometry.coordinates.length;
+        const counter = Math.floor((videoTime / videoElement.duration) * steps);
+
+        const start = lineLayer.features[0].geometry.coordinates[counter];
+        const end = lineLayer.features[0].geometry.coordinates[counter + 1];
+
+        if (!start || !end) {
+            running = false;
+            return;
+        }
+
+        // Update point geometry to a new position based on the counter denoting
+        // the index to access the arc
+        firstPointFeature.geometry.coordinates = lineLayer.features[0].geometry.coordinates[counter];
+
+        /*
+        // Calculate the bearing to ensure the icon is rotated to match the route arc
+        pointLayer.features[0].properties.bearing = turf.bearing(
+          turf.point(start),
+          turf.point(end)
+        );
+    */
+/*
+        // Update the source with this new data
+        map.getSource('point').setData(firstPointFeature);
+
+        speedValue = pointLayer.features[counter].properties.speed;
+        updateSpeedometer(speedValue);
+
+        // Request the next frame of animation
+        requestAnimationFrame(animate);
+    }
+
+
+    // Event listener for video play
+    videoElement.addEventListener('play', () => {
+        running = true;
+        animate();
+        toggleAnimation();
+        updateNeedleRotation(speedValue)
+    });
+
+    // Event listener for video pause
+    videoElement.addEventListener('pause', () => {
+        running = false;
+        toggleAnimation();
+        updateNeedleRotation(speedValue)
+    });
+
+    videoElement.addEventListener('ended', () => {
+        tachometer.classList.remove('playing');
+        needle.style.transform = 'translate(-50%, -50%) rotate(-90deg)';
+        speedometerValue.textContent = `⌀ ${averageSpeed.toFixed(2)} km/h`;
+    });
+
+}
+*/
   

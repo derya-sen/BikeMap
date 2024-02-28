@@ -15,76 +15,96 @@
   <link href='index.css' rel='stylesheet' />
 </head>
 <body>
+  <div class="website-header">
+    <h1 class="website-name">BIKE MAP</h1>
+    <img src="fahrrad.png" alt="Bike" class="bike-image">
+  </div>
+  
   <div id='container'>
-    <div id='map'>
-      <div id="layerList"></div> 
-      <div id="popup"></div>
 
-      <div class="tachometer" id="tachometer">
-        <div class="needle" id="needle"></div>
-        <div class="speed-number-wapper">
-          <div class="speed-number speed-0">
-            <span>0</span>
+    </div>
+      <div id='map'>
+        <div id="layerList">
           </div>
-          <div class="speed-number speed-10">
-            <span>10</span>
+      
+        <div id="popup"></div>
+
+        <div class="tachometer" id="tachometer">
+          <div class="needle" id="needle"></div>
+          <div class="speed-number-wapper">
+            <div class="speed-number speed-0">
+              <span>0</span>
+            </div>
+            <div class="speed-number speed-10">
+              <span>10</span>
+            </div>
+            <div class="speed-number speed-20">
+              <span>20</span>
+            </div>
+            <div class="speed-number speed-30">
+              <span>30</span>
+            </div>
+            <div class="speed-number speed-40">
+              <span>40</span>
+            </div>
+            <div class="speed-number speed-50">
+              <span>50</span>
+            </div>
+            <div class="speed-number speed-60">
+              <span>60</span>
+            </div>
           </div>
-          <div class="speed-number speed-20">
-            <span>20</span>
-          </div>
-          <div class="speed-number speed-30">
-            <span>30</span>
-          </div>
-          <div class="speed-number speed-40">
-            <span>40</span>
-          </div>
-          <div class="speed-number speed-50">
-            <span>50</span>
-          </div>
-          <div class="speed-number speed-60">
-            <span>60</span>
-          </div>
+          <div class="speed-text" id="speedText"></div>
         </div>
-        <div class="speed-text" id="speedText"></div>
       </div>
-    </div>
-    <canvas id="combinedCanvas" style="display: none;"></canvas>
+      <canvas id="combinedCanvas" style="display: none;"></canvas>
 
-    
-
-    <div id='sidebar'>
       
-      <div class='sidebar-item'>
-        <input type='file' id='csvFile'accept=".csv" multiple>
-      </div>
 
-      <hr class='sidebar-divider'>
-
-      <div class='sidebar-item'>
-        <input type="file" accept="video/*" id="videoInput" onchange="handleFileChange()">
-      </div>
-
-      <hr class='sidebar-divider'>
-
-      <div class='sidebar-item' id='videoContainer' style='display: none;'>
-        <video id='mapVideo' width='320' height='240' controls>
-            <source src='' id="videoSource">
-        </video>
-
-        <label for="speedControl">Playback Speed:</label>
-          <input type="range" id="speedControl" min="0.5" max="5.0" step="0.1" value="1.0" onchange="changePlaybackSpeed()">
-          <span id="speedDisplay">1.0x</span>  
-    </div>
-
-      <hr class='sidebar-divider'>
-
-      <div class='sidebar-item'>
-          <button id="downloadButton" onclick="downloadMap()">Download Map</button>
-        <canvas id="combinedCanvas" style="display: none;"></canvas>
-      </div>
+      <div id='sidebar'>
+        
+        <div class='sidebar-item'>
+          <input type='file' id='csvFile' accept=".csv" style="display: none;">
+          <label for="csvFile" class="upload-button">
+              <img src="csv.png" alt="Upload">
+          </label>
       
-      
-    </div>
+          <input type='file' id='videoInput' accept="video/*"  style="display: none;" onchange="handleFileChange()">
+            <label for="videoInput" class="upload-button">
+              <img src="video.jpg" alt="Upload">
+          </label>
+      </div>
+
+        <hr class='sidebar-divider'>
+
+        <div class='sidebar-item' id='videoContainer' style='display: none;'>
+          <video id='mapVideo' width='320' height='240'  controls>
+              <source src='' id="videoSource">
+          </video>
+        
+
+          <label for="speedControl">Geschwindigkeit</label>
+            <br>
+            <input type="range" id="speedControl" min="0.5" max="5.0" step="0.1" value="1.0" onchange="changePlaybackSpeed()">
+            <span id="speedDisplay">1.0x</span>  
+      </div>
+
+        <hr class='sidebar-divider'>
+
+        <div class='sidebar-item'>
+            <button id="downloadButton"  style="display: none;" onclick="downloadMap()">Download Map</button>
+            <label for="downloadButton" class="download-button">
+              <img src="download.png" alt="Download">
+            </label>
+            <canvas id="combinedCanvas" style="display: none;"></canvas>
+
+        </div>
+
+
+        
+        
+        
+      </div>
   </div> 
 
   
