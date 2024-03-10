@@ -11,14 +11,13 @@ body {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 80px;
+  height: 100px;
   background-color: rgb(204, 214, 184);
 }
 
 
 .website-name {
   text-align: left;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   font-size: 40px;
   font-weight: bolder;
   color: #000000;
@@ -224,7 +223,6 @@ form {
 }
 
 #popup {
-  font-family: 'Calibri';
   padding: 10px;
 }
 
@@ -307,7 +305,6 @@ form {
 
 .speed-number {
   color: #fff;
-  font-family: 'Calibri';
 }
 
 .speed-number span:after {
