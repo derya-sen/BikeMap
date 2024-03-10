@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Bike Map</title>
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
@@ -7,103 +8,140 @@
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
-  <script src="https://unpkg.com/mapbox-gl-export"></script>
 
   <link href='index.css' rel='stylesheet' />
 </head>
+
 <body>
+  <div id="overlay" class="overlay"></div>
+
+  <div id="info-box" class="info-box">
+    <div class="info-text">
+      <p style="text-align: center; font-weight: bolder;">Wilkommen auf Bike Map!</p>
+      <p>Auf dieser Website kannst du mobile Geodaten und <br>
+        Fahrradrouten hochladen, deine Daten betrachten und <br>
+        die Karte mit verschiedenen Layer herunterladen.</p>
+    </div>
+    <button id="close-btn" class="close-btn">Schließen</button>
+  </div>
+
   <div class="website-header">
     <h1 class="website-name">BIKE MAP</h1>
-    <img src="fahrrad.png" alt="Bike" class="bike-image">
+    <img src="images/fahrrad.png" alt="Bike" class="bike-image">
   </div>
-  
+
+
+
   <div id='container'>
 
+  </div>
+  <div id='map'>
+    <div id="layerList">
     </div>
-      <div id='map'>
-        <div id="layerList">
-          </div>
-      
-        <div id="popup"></div>
 
-        <div class="tachometer" id="tachometer">
-          <div class="needle" id="needle"></div>
-          <div class="speed-number-wapper">
-            <div class="speed-number speed-0">
-              <span>0</span>
-            </div>
-            <div class="speed-number speed-10">
-              <span>10</span>
-            </div>
-            <div class="speed-number speed-20">
-              <span>20</span>
-            </div>
-            <div class="speed-number speed-30">
-              <span>30</span>
-            </div>
-            <div class="speed-number speed-40">
-              <span>40</span>
-            </div>
-            <div class="speed-number speed-50">
-              <span>50</span>
-            </div>
-            <div class="speed-number speed-60">
-              <span>60</span>
-            </div>
-          </div>
-          <div class="speed-text" id="speedText"></div>
+    <div id="popup"></div>
+
+    <div class="tachometer" id="tachometer">
+      <div class="needle" id="needle"></div>
+      <div class="speed-number-wapper">
+        <div class="speed-number speed-0">
+          <span>0</span>
+        </div>
+        <div class="speed-number speed-10">
+          <span>10</span>
+        </div>
+        <div class="speed-number speed-20">
+          <span>20</span>
+        </div>
+        <div class="speed-number speed-30">
+          <span>30</span>
+        </div>
+        <div class="speed-number speed-40">
+          <span>40</span>
+        </div>
+        <div class="speed-number speed-50">
+          <span>50</span>
+        </div>
+        <div class="speed-number speed-60">
+          <span>60</span>
         </div>
       </div>
-      <canvas id="combinedCanvas" style="display: none;"></canvas>
+      <div class="speed-text" id="speedText"></div>
+    </div>
+  </div>
 
-      
 
-      <div id='sidebar'>
-        
-        <div class='sidebar-item'>
-          <input type='file' id='csvFile' accept=".csv" style="display: none;">
-          <label for="csvFile" class="upload-button">
-              <img src="csv.png" alt="Upload">
-          </label>
-      
-          <input type='file' id='videoInput' accept="video/*"  style="display: none;" onchange="videoUpload()">
-            <label for="videoInput" class="upload-button">
-              <img src="video.jpg" alt="Upload">
-          </label>
-      </div>
 
-        <hr class='sidebar-divider'>
+  <div id='sidebar'>
 
-        <div class='sidebar-item' id='videoContainer' style='display: none;'>
-          <video id='mapVideo' width='320' height='240'  controls>
-              <source src='' id="videoSource">
-          </video>
-        
-
-          <label for="speedControl">Geschwindigkeit</label>
-            <br>
-            <input type="range" id="speedControl" min="0.5" max="5.0" step="0.1" value="1.0" onchange="changePlaybackSpeed()">
-            <span id="speedDisplay">1.0x</span>  
-      </div>
-
-        <hr class='sidebar-divider'>
-
-        <div class='sidebar-item'>
-            <button id="downloadButton"  style="display: none;" onclick="downloadMap()">Download Map</button>
-            <label for="downloadButton" class="download-button">
-              <img src="download.png" alt="Download">
-            </label>
-            <canvas id="combinedCanvas" style="display: none;"></canvas>
-
+    <div class='sidebar-item'>
+      <div class="csv-info">
+        <span>ℹ️</span>
+        <div class="info-content">Die CSV-Datei sollte folgende Daten enthalten: <br>
+          -Längengrad <br>
+          -Breitengrad <br>
+          -Zeitpunkt <br>
+          Daten zur Temperatur, Luftfeuchtigkeit, Feinstaub, Distanz, Erschütterung und Geschwindigkeit können
+          präsentiert werden.
         </div>
-        
       </div>
-  </div> 
+      <input type='file' id='csvFile' accept=".csv" style="display: none;">
+      <label for="csvFile" class="csv-button">
+        <img src="images/csvUpload.png" alt="Upload">
+      </label>
 
-  
-  <script src='indexNeu.js'></script>
+
+      <div class="video-info">
+        <span>ℹ️</span>
+        <div class="info-content">Hier das zugehörige Video zu der CSV-Datei hochladen</div>
+      </div>
+      <input type='file' id='videoInput' accept="video/*" style="display: none;" onchange="videoUpload()">
+      <label for="videoInput" class="video-button">
+        <img src="images/video.jpg" alt="Upload">
+      </label>
+
+    </div>
+
+    <hr class='sidebar-divider'>
+
+    <div class='sidebar-item' id='videoContainer' style='display: none;'>
+      <div class="videoPlay-info">
+        <span>ℹ️</span>
+        <div class="info-content">Schließe alle Layer, um die Route synchronisiert zum Video zu verfolgen.</div>
+      </div>
+      <video id='video' width='320' height='240' controls>
+        <source src='' id="videoSource">
+      </video>
+
+      <label for="speedControl">Geschwindigkeit</label>
+      <br>
+      <input type="range" id="speedControl" min="0.5" max="5.0" step="0.1" value="1.0" onchange="changePlaybackSpeed()">
+      <span id="speedDisplay">1.0x</span>
+
+    </div>
+
+    <hr class='sidebar-divider'>
+
+    <div class='sidebar-item'>
+
+      <div class="map-info">
+        <span>ℹ️</span>
+        <div class="info-content">Karte mit ausgewähltem/n Layer/Layern herunterladen</div>
+      </div>
+      <canvas id="canvas" style="display: none;"></canvas>
+    </div>
+    <button id="downloadButton" style="display: none;" onclick="downloadMap()">Download Map</button>
+    <label for="downloadButton" class="download-button">
+      <img src="images/download.png" alt="Download">
+    </label>
+
+
+  </div>
+
+  </div>
+
+
+  <script src='index.js'></script>
 </body>
+
 </html>
