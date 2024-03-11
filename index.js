@@ -1159,21 +1159,21 @@ function changePlaybackSpeed() {
 
 
 
-
 //////////////////////////////////////Download//////////////////////////////////////////////////////////////////////
 //Function downloads map with selected layers or only with route depending on selected layers.
 function downloadMap() {
     const ctx = canvas.getContext('2d');
 
-    const width = mapContainer.offsetWidth;
-    const height = mapContainer.offsetHeight;
+    const mapContainerWidth = mapContainer.offsetWidth;
+    const mapContainerHeight = mapContainer.offsetHeight;
 
-    canvas.width = width * window.devicePixelRatio;
-    canvas.height = height * window.devicePixelRatio;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+    canvas.width = mapContainerWidth * window.devicePixelRatio;
+    canvas.height = mapContainerHeight * window.devicePixelRatio;
+    canvas.style.width = `${mapContainerWidth}px`;
+    canvas.style.height = `${mapContainerHeight}px`;
 
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
 
     map.panBy([1, 0]);
 
@@ -1185,8 +1185,8 @@ function downloadMap() {
                 ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
 
                 html2canvas(tachometer).then(tachometerCanvas => {
-                    const tachometerX = width - tachometerCanvas.width - 10;
-                    const tachometerY = height - tachometerCanvas.height - 10;
+                    const tachometerX = mapContainerWidth - tachometerCanvas.width - 10;
+                    const tachometerY = mapContainerHeight - tachometerCanvas.height - 10;
 
                     ctx.beginPath();
                     ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
@@ -1196,7 +1196,7 @@ function downloadMap() {
                     ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
 
                     const link = document.createElement('a');
-                    link.setAttribute('download', `map_with_tachometer.png`);
+                    link.setAttribute('download', `map_with_route.png`);
                     link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
                     link.click();
                 });
@@ -1220,11 +1220,11 @@ function downloadMap() {
             ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
 
             html2canvas(layerList).then(legendCanvas => {
-                ctx.drawImage(legendCanvas, 10, height - layerList.offsetHeight - 10);
+                ctx.drawImage(legendCanvas, 10, mapContainerHeight - layerList.offsetHeight - 10);
 
                 html2canvas(tachometer).then(tachometerCanvas => {
-                    const tachometerX = width - tachometerCanvas.width - 10; 
-                    const tachometerY = height - tachometerCanvas.height - 10; 
+                    const tachometerX = mapContainerWidth - tachometerCanvas.width - 10; 
+                    const tachometerY = mapContainerHeight - tachometerCanvas.height - 10; 
 
                     ctx.beginPath();
                     ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
@@ -1234,7 +1234,7 @@ function downloadMap() {
                     ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
 
                     const link = document.createElement('a');
-                    link.setAttribute('download', `map_with_${layerId}_legend_and_tachometer.png`);
+                    link.setAttribute('download', `map_with_layer_legend_and_tachometer.png`);
                     link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
                     link.click();
                 });
