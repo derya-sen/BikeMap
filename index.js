@@ -1167,6 +1167,7 @@ function downloadMap() {
     const mapContainerWidth = mapContainer.offsetWidth;
     const mapContainerHeight = mapContainer.offsetHeight;
 
+
     canvas.width = mapContainerWidth * window.devicePixelRatio;
     canvas.height = mapContainerHeight * window.devicePixelRatio;
     canvas.style.width = `${mapContainerWidth}px`;
@@ -1174,8 +1175,21 @@ function downloadMap() {
 
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-
     map.panBy([1, 0]);
+
+    let maxZoom = map.getMaxZoom();
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    console.log(screenHeight, screenWidth)
+    const x = 600; 
+
+    if (screenWidth < x || screenHeight < x) {
+        maxZoom = 12; 
+    } else {
+        maxZoom = 18; 
+    }
+
+    map.setMaxZoom(maxZoom);
 
     const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
 
@@ -1196,7 +1210,7 @@ function downloadMap() {
                     ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
 
                     const link = document.createElement('a');
-                    link.setAttribute('download', `map_with_route.png`);
+                    link.setAttribute('download', `map.png`);
                     link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
                     link.click();
                 });
