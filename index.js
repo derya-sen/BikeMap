@@ -1159,6 +1159,7 @@ function changePlaybackSpeed() {
 
 
 
+
 //////////////////////////////////////Download//////////////////////////////////////////////////////////////////////
 //Function downloads map with selected layers or only with route depending on selected layers.
 function downloadMap() {
@@ -1180,7 +1181,8 @@ function downloadMap() {
     let maxZoom = map.getMaxZoom();
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
-    console.log(screenHeight, screenWidth)
+    alert(`Screen width: ${screenWidth}, Screen height: ${screenHeight}`);
+
     const x = 600; 
 
     if (screenWidth < x || screenHeight < x) {
