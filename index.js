@@ -1183,9 +1183,9 @@ function downloadMap() {
     const screenHeight = window.innerHeight;
     alert(`Screen width: ${screenWidth}, Screen height: ${screenHeight}`);
 
-    const x = 600; 
+    const x = 1000; 
 
-    if (screenWidth < x || screenHeight < x) {
+    if (screenHeight > x) {
         maxZoom = 12; 
     } else {
         maxZoom = 18; 
