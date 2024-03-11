@@ -1181,14 +1181,21 @@ function downloadMap() {
     let maxZoom = map.getMaxZoom();
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
-    alert(`Screen width: ${screenWidth}, Screen height: ${screenHeight}`);
 
     const x = 1000; 
 
     if (screenHeight > x) {
-        maxZoom = 12; 
+        const bounds = turf.bbox(pointGeoJSON);
+        map.fitBounds(bounds, {
+            padding: 10,
+            maxZoom: 12
+        })
     } else {
-        maxZoom = 18; 
+        const bounds = turf.bbox(pointGeoJSON);
+        map.fitBounds(bounds, {
+            padding: 10,
+            maxZoom: 20
+        });
     }
 
     map.setMaxZoom(maxZoom);
