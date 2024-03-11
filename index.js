@@ -1179,7 +1179,6 @@ function downloadMap() {
     map.panBy([1, 0]);
 
     let maxZoom = map.getMaxZoom();
-    const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
     const x = 1000; 
@@ -1264,4 +1263,9 @@ function downloadMap() {
             })
         });
     }, 200);
+    const bounds = turf.bbox(pointGeoJSON);
+        map.fitBounds(bounds, {
+            padding: 10,
+            maxZoom: 20
+        });
 }
