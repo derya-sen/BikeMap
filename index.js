@@ -1186,7 +1186,7 @@ function downloadMap() {
     if (screenHeight > x) {
         const bounds = turf.bbox(pointGeoJSON);
         map.fitBounds(bounds, {
-            padding: 20,
+            padding: 100,
             maxZoom: 20
         })
     } else {
@@ -1263,9 +1263,5 @@ function downloadMap() {
             })
         });
     }, 200);
-    const bounds = turf.bbox(pointGeoJSON);
-        map.fitBounds(bounds, {
-            maxZoom: 20, 
-            padding: 20
-        });
+    zoomToLayer(pointGeoJSON);
 }
