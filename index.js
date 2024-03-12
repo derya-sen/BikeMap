@@ -1172,9 +1172,15 @@ function downloadMap() {
     canvas.height = mapContainerHeight * window.devicePixelRatio;
     canvas.style.width = `${mapContainerWidth}px`;
     canvas.style.height = `${mapContainerHeight}px`;
-
-    alert(mapContainerHeight, mapContainerWidth, window.devicePixelRatio, canvas.height, canvas.width)
-
+    
+    alert(
+        "Map Container Height: " + mapContainerHeight + "\n" +
+        "Map Container Width: " + mapContainerWidth + "\n" +
+        "Device Pixel Ratio: " + window.devicePixelRatio + "\n" +
+        "Canvas Height: " + canvas.height + "\n" +
+        "Canvas Width: " + canvas.width
+    );
+    
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     map.panBy([1, 0]);
