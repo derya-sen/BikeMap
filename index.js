@@ -1184,8 +1184,8 @@ function downloadMap() {
                     ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
     
                     html2canvas(tachometer).then(tachometerCanvas => {
-                        const tachometerX = mapContainerWidth - tachometerCanvas.width - 100;
-                        const tachometerY = mapContainerHeight - tachometerCanvas.height - 100;
+                        const tachometerX = mapContainerWidth - tachometerCanvas.width + 200;
+                        const tachometerY = mapContainerHeight - tachometerCanvas.height + 200;
     
                         ctx.beginPath();
                         ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
@@ -1210,11 +1210,11 @@ function downloadMap() {
                 ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
     
                 html2canvas(layerList).then(legendCanvas => {
-                    ctx.drawImage(legendCanvas, 10, mapContainerHeight - layerList.offsetHeight - 100);
+                    ctx.drawImage(legendCanvas, 10, mapContainerHeight - layerList.offsetHeight + 100);
     
                     html2canvas(tachometer).then(tachometerCanvas => {
-                        const tachometerX = mapContainerWidth - tachometerCanvas.width - 100; 
-                        const tachometerY = mapContainerHeight - tachometerCanvas.height - 100; 
+                        const tachometerX = mapContainerWidth - tachometerCanvas.width + 200; 
+                        const tachometerY = mapContainerHeight - tachometerCanvas.height + 200; 
     
                         ctx.beginPath();
                         ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
