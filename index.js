@@ -1177,7 +1177,65 @@ function downloadMap() {
 
     const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
 
-    if (!selectedCheckbox) {
+    if (mapContainerHeight > 1000){
+        if (!selectedCheckbox) {
+            setTimeout(() => {
+                map.once('render', () => {
+                    ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
+    
+                    html2canvas(tachometer).then(tachometerCanvas => {
+                        const tachometerX = mapContainerWidth - tachometerCanvas.width - 100;
+                        const tachometerY = mapContainerHeight - tachometerCanvas.height - 100;
+    
+                        ctx.beginPath();
+                        ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.clip();
+    
+                        ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
+    
+                        const link = document.createElement('a');
+                        link.setAttribute('download', `map.png`);
+                        link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
+                        link.click();
+                    });
+                });
+            }, 200);
+            return;
+        }
+    
+    
+        setTimeout(() => {
+            map.once('render', () => {
+                ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
+    
+                html2canvas(layerList).then(legendCanvas => {
+                    ctx.drawImage(legendCanvas, 10, mapContainerHeight - layerList.offsetHeight - 100);
+    
+                    html2canvas(tachometer).then(tachometerCanvas => {
+                        const tachometerX = mapContainerWidth - tachometerCanvas.width - 100; 
+                        const tachometerY = mapContainerHeight - tachometerCanvas.height - 100; 
+    
+                        ctx.beginPath();
+                        ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.clip();
+    
+                        ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
+    
+                        const link = document.createElement('a');
+                        link.setAttribute('download', `map_with_geodata.png`);
+                        link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
+                        link.click();
+                    });
+                })
+            });
+        }, 200);
+    }
+
+    else {
+
+     if (!selectedCheckbox) {
         setTimeout(() => {
             map.once('render', () => {
                 ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
@@ -1200,15 +1258,6 @@ function downloadMap() {
                 });
             });
         }, 200);
-        return;
-    }
-
-    const layerId = selectedCheckbox.id;
-    const legendContainerId = layerId;
-    const legendContainer = document.getElementById(legendContainerId);
-
-    if (!legendContainer) {
-        console.error(`Legend container with ID '${legendContainerId}' not found.`);
         return;
     }
 
@@ -1239,4 +1288,5 @@ function downloadMap() {
             })
         });
     }, 200);
+    }
 }
