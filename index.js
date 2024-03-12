@@ -1173,6 +1173,14 @@ function downloadMap() {
     canvas.style.width = `${mapContainerWidth}px`;
     canvas.style.height = `${mapContainerHeight}px`;
 
+    if (mapContainerHeight > 1000){
+        ctx.scale(window.devicePixelRatio*10, window.devicePixelRatio*10);
+    }
+    else {
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    }
+
     map.panBy([1, 0]);
 
     const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
