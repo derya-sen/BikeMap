@@ -1173,13 +1173,7 @@ function downloadMap() {
     canvas.style.width = `${mapContainerWidth}px`;
     canvas.style.height = `${mapContainerHeight}px`;
 
-    if (mapContainerHeight > 1000){
-        ctx.scale(window.devicePixelRatio*0.5, window.devicePixelRatio*0.5);
-    }
-    else {
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    }
 
     map.panBy([1, 0]);
 
