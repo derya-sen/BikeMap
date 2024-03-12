@@ -1173,20 +1173,6 @@ function downloadMap() {
     canvas.style.width = `${mapContainerWidth}px`;
     canvas.style.height = `${mapContainerHeight}px`;
 
-    alert(
-        "Map Container Height: " + mapContainerHeight + "\n" +
-        "Map Container Width: " + mapContainerWidth + "\n" +
-        "Device Pixel Ratio: " + window.devicePixelRatio + "\n" +
-        "Canvas Height: " + canvas.height + "\n" +
-        "Canvas Width: " + canvas.width
-    );
-    if (mapContainerHeight > 1000){
-        ctx.scale(window.devicePixelRatio*10, window.devicePixelRatio*10);
-    }
-    else {
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    }
-    
     map.panBy([1, 0]);
 
     const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
