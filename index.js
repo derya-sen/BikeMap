@@ -1167,18 +1167,15 @@ function downloadMap() {
 
     const mapContainerWidth = mapContainer.offsetWidth;
     const mapContainerHeight = mapContainer.offsetHeight;
-    console.log(mapContainerHeight, mapContainerWidth)
 
     canvas.width = mapContainerWidth * window.devicePixelRatio;
     canvas.height = mapContainerHeight * window.devicePixelRatio;
-    console.log(window.devicePixelRatio)
     canvas.style.width = `${mapContainerWidth}px`;
     canvas.style.height = `${mapContainerHeight}px`;
-    console.log(canvas.height, canvas.width,)
 
-    alert(mapContainerHeight, mapContainerWidth, )
+    alert(mapContainerHeight, mapContainerWidth, window.devicePixelRatio, canvas.height, canvas.width)
 
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio, window.devicePixelRatio, canvas.height, canvas.width);
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     map.panBy([1, 0]);
 
