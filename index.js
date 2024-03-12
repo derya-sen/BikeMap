@@ -1174,7 +1174,7 @@ function downloadMap() {
     canvas.style.height = `${mapContainerHeight}px`;
 
     if (mapContainerHeight > 1000){
-        ctx.scale(window.devicePixelRatio*10, window.devicePixelRatio*10);
+        ctx.scale(window.devicePixelRatio*0.5, window.devicePixelRatio*0.5);
     }
     else {
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
