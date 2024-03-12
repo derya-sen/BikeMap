@@ -1165,39 +1165,19 @@ function changePlaybackSpeed() {
 function downloadMap() {
     const ctx = canvas.getContext('2d');
 
-    const mapContainerWidth = mapContainer.offsetWidth;
-    const mapContainerHeight = mapContainer.offsetHeight;
+    const width = mapContainer.offsetWidth;
+    const height = mapContainer.offsetHeight;
 
 
-    canvas.width = mapContainerWidth * window.devicePixelRatio;
-    canvas.height = mapContainerHeight * window.devicePixelRatio;
-    canvas.style.width = `${mapContainerWidth}px`;
-    canvas.style.height = `${mapContainerHeight}px`;
+    canvas.width = width * window.devicePixelRatio;
+    canvas.height = height * window.devicePixelRatio;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     map.panBy([1, 0]);
 
-    let maxZoom = map.getMaxZoom();
-    const screenHeight = window.innerHeight;
-
-    const x = 1000; 
-
-    if (screenHeight > x) {
-        const bounds = turf.bbox(pointGeoJSON);
-        map.fitBounds(bounds, {
-            padding: 100,
-            maxZoom: 20
-        })
-    } else {
-        const bounds = turf.bbox(pointGeoJSON);
-        map.fitBounds(bounds, {
-            maxZoom: 20,
-            padding: 20
-        });
-    }
-
-    map.setMaxZoom(maxZoom);
 
     const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
 
@@ -1207,8 +1187,8 @@ function downloadMap() {
                 ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
 
                 html2canvas(tachometer).then(tachometerCanvas => {
-                    const tachometerX = mapContainerWidth - tachometerCanvas.width - 10;
-                    const tachometerY = mapContainerHeight - tachometerCanvas.height - 10;
+                    const tachometerX = width - tachometerCanvas.width - 10;
+                    const tachometerY = height - tachometerCanvas.height - 10;
 
                     ctx.beginPath();
                     ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
@@ -1218,7 +1198,7 @@ function downloadMap() {
                     ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
 
                     const link = document.createElement('a');
-                    link.setAttribute('download', `map.png`);
+                    link.setAttribute('download', `map_with_geodata.png`);
                     link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
                     link.click();
                 });
@@ -1242,11 +1222,11 @@ function downloadMap() {
             ctx.drawImage(map.getCanvas(), 0, 0, canvas.width, canvas.height);
 
             html2canvas(layerList).then(legendCanvas => {
-                ctx.drawImage(legendCanvas, 10, mapContainerHeight - layerList.offsetHeight - 10);
+                ctx.drawImage(legendCanvas, 10, height - layerList.offsetHeight - 10);
 
                 html2canvas(tachometer).then(tachometerCanvas => {
-                    const tachometerX = mapContainerWidth - tachometerCanvas.width - 10; 
-                    const tachometerY = mapContainerHeight - tachometerCanvas.height - 10; 
+                    const tachometerX = width - tachometerCanvas.width - 10; 
+                    const tachometerY = height - tachometerCanvas.height - 10; 
 
                     ctx.beginPath();
                     ctx.arc(tachometerX + tachometerCanvas.width / 2, tachometerY + tachometerCanvas.height / 2, tachometerCanvas.width / 2, 0, Math.PI * 2);
@@ -1256,12 +1236,11 @@ function downloadMap() {
                     ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
 
                     const link = document.createElement('a');
-                    link.setAttribute('download', `map_with_layer_legend_and_tachometer.png`);
+                    link.setAttribute('download', `map_with_geodata.png`);
                     link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
                     link.click();
                 });
             })
         });
     }, 200);
-    zoomToLayer(pointGeoJSON);
 }
