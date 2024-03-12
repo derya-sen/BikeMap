@@ -1178,19 +1178,6 @@ function downloadMap() {
 
     map.panBy([1, 0]);
 
-    let maxZoom = map.getMaxZoom();
-    const screenHeight = window.innerHeight;
-
-    const x = 1000; 
-
-    if (screenHeight > x) {
-        maxZoom = 16; 
-    } else {
-        maxZoom = 20; 
-    }
-
-    map.setMaxZoom(maxZoom);
-
     const selectedCheckbox = layerList.querySelector('.layer-checkbox:checked');
 
     if (!selectedCheckbox) {
@@ -1210,7 +1197,7 @@ function downloadMap() {
                     ctx.drawImage(tachometerCanvas, tachometerX, tachometerY, tachometerCanvas.width, tachometerCanvas.height);
 
                     const link = document.createElement('a');
-                    link.setAttribute('download', `map_with_geodata.png`);
+                    link.setAttribute('download', `map.png`);
                     link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'));
                     link.click();
                 });
@@ -1256,5 +1243,3 @@ function downloadMap() {
         });
     }, 200);
 }
-
-map.setMaxZoom(20);
