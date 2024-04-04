@@ -1120,8 +1120,8 @@ function calculateTime(geojson) {
 function calculateAverageSpeed(geojson) {
     time = calculateTime(geojson);
     distance = calculateTotalDistance(geojson);
-    averageSpeed = distance / time.totalTime;
-    tachometerText = `⌀ ${Math.round(averageSpeed)} km/h<br>🛣️ ${distance.toFixed(2)} km<br> ⏱️ ${time.hours + " h, " + time.minutes + " m, " + time.seconds + " s"}`;
+    averageSpeed = distance / (time.totalTime / 3600);
+    tachometerText = `⌀ ${averageSpeed.toFixed(3)} km/h<br>🛣️ ${distance.toFixed(2)} km<br> ⏱️ ${time.hours + " h, " + time.minutes + " m, " + time.seconds + " s"}`;
     speedText.innerHTML = tachometerText;
 }
 
