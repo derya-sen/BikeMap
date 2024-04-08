@@ -32,7 +32,7 @@ Das Tool bietet die Möglichkeit verschiedene Umweltdaten und weitere zu visuali
 - Zeitpunkt
 Diese Daten können z.B. mit der senseBox:bike gesammelt werden, einem Sensormessgerät speziell für die Datenerhebung mit dem Fahrrad.
 Zusätzlich bietet sich die Möglichkeit, die Fahrradroute mit einer Kamera aufzunehmen und auch in die Anwendung zu laden.
-
+Die Testdaten sind als **"Sensordaten-Fahrradroute.csv"** im Dateiordner geladen. Das Video konnte aufgrund der Größe nicht hinzugefügt werden.
 
 ## Funktionen
 
